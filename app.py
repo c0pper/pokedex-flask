@@ -48,7 +48,9 @@ def home():
     if request.method == "POST":
         input_id = request.form["pkmnid"]
         p = Pokemon(str(input_id))
-    return render_template("index.html", name=p.name, type1=p.type1, type2=p.type2)
+        return render_template("index.html", name=p.name, type1=p.type1, type2=p.type2)
+    else:
+        return render_template("index.html")
 
 if __name__ == "__main__":
     app.run()
