@@ -27,15 +27,18 @@ class Pokemon:
         self.req = Request(self.url, headers={'User-Agent': 'Mozilla/5.0'})
         self.soup = BeautifulSoup(urlopen(self.req).read(), 'html.parser')
 
+        find_img = self.soup.findAll("img", {"alt": self.name})
+        self.img = "https:"+str(find_img[0]["src"])
+
         self.type1 = str(self.soup.select("#mw-content-text > div > table:nth-child(2) > tbody > tr:nth-child(2) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(1) > a > span > b")[0].get_text())
         self.type2 = str(self.soup.select("#mw-content-text > div > table:nth-child(2) > tbody > tr:nth-child(2) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(2) > a > span > b")[0].get_text())
 
         if self.type2 == "Unknown":
             self.type2 = ""
-        print("Name: " + self.name)
-        print(f"\nType(s): {self.type1} {self.type2}")
 
 
+
+po = Pokemon(111)
 
 
 
@@ -48,9 +51,14 @@ def home():
     if request.method == "POST":
         input_id = request.form["pkmnid"]
         p = Pokemon(str(input_id))
-        return render_template("index.html", name=p.name, type1=p.type1, type2=p.type2)
+        return render_template("index.html",
+                               name=p.name,
+                               type1=p.type1,
+                               type2=p.type2,
+                               img=p.img
+                               )
     else:
         return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
